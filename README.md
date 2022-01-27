@@ -2,7 +2,7 @@
 
 ## Background
 
-Webpack bundles all the source code (including dependencies) into a single JS file. In Node.js module loading is usually done via CommonJS, meaning dependencies are loaded with `require` function (`require("express")`). OpenTelemetry currently only supports CommonJS as it injects itself into the `require` calls and modifies, intercepts loaded modules. With Webpack however these `require` calls are compiled out as all of the source code lives in a single bundle file and Webpack's internal module loading is used after copying the code. Thus OpenTelemetry (nor any other instrumentation SDKs) can instrument Webpack's internal modules.
+Webpack bundles all the source code (including dependencies) into a single JS file. In Node.js module loading is usually done via CommonJS, meaning dependencies are loaded with `require` function (`require("express")`). OpenTelemetry currently only supports CommonJS as it injects itself into the `require` calls and modifies, intercepts loaded modules. With Webpack however these `require` calls are compiled out as all of the source code lives in a single bundle file and Webpack's internal module loading is used after copying the code. Thus OpenTelemetry (nor any other instrumentation SDKs) cannot instrument Webpack's internal modules.
 
 ## Workaround
 
