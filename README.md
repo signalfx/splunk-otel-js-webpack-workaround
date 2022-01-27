@@ -11,8 +11,8 @@ To get tracing working via OpenTelemetry, we need to retain the `require` calls.
 The downside is that the dependencies listed in externals now need to be available in node_modules, else `require` can't find them.
 
 Say we are using `express` and want to instrument it via `@opentelemetry/instrumentation-express`, then the following needs to be added to `webpack.config.js`:
-```json
-  externalsType: 'node-commonjs',
+```js
+  externalsType: "node-commonjs",
   externals: [
     "express"
   ]
