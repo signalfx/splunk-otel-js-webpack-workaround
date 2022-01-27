@@ -1,0 +1,35 @@
+{
+  "name": "webpack-trace",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "compile": "webpack --config webpack.config.js",
+    "start": "node -r @splunk/otel/instrument dist/bundle.js"
+  },
+  "dependencies": {
+    "@opentelemetry/api": "1.0.4",
+    "@opentelemetry/instrumentation-dns": "0.27.0",
+    "@opentelemetry/instrumentation-http": "0.27.0",
+    "@opentelemetry/instrumentation-express": "0.27.0",
+    "@opentelemetry/instrumentation-ioredis": "0.27.0",
+    "@opentelemetry/instrumentation-mysql": "0.27.0",
+    "@opentelemetry/instrumentation-aws-sdk": "0.4.0",
+    "opentelemetry-instrumentation-sequelize": "0.27.0",
+    "@opentelemetry/instrumentation-mongodb": "0.27.0",
+    "@splunk/otel": "0.15.0",
+    "express": "^4.17.0",
+    "ioredis": "4.28.3",
+    "mysql": "2.18.1",
+    "sequelize": "5.18.0",
+    "mongodb": "3.5.6",
+    "aws-sdk": "2.452.0",
+    "got": "12.0.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.0",
+    "@types/got": "9.6.12",
+    "ts-loader": "^9.2.6",
+    "webpack": "^5.67.0",
+    "webpack-cli": "^4.9.2"
+  }
+}
