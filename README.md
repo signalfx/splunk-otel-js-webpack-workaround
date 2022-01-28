@@ -1,6 +1,6 @@
-# Instrumentation workaround for Webpack 4 based projects
+# Instrumentation workaround for Webpack 5 based projects
 
-Webpack 5 workaround is located [here](signalfx/splunk-otel-js-webpack-workaround).
+Webpack 4 workaround is located [here](signalfx/splunk-otel-js-webpack-workaround/tree/webpack4).
 
 ## Background
 
