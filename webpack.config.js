@@ -1,9 +1,10 @@
 const path = require('path');
+const nodeExternals = require('webpack-node-externals');
 
 module.exports = {
 	mode: 'development',
   devtool: 'source-map',
-  entry: './src/index.ts',
+  entry: './index.ts',
   module: {
     rules: [
       {
@@ -20,15 +21,25 @@ module.exports = {
     filename: 'bundle.js'
   },
   /** WORKAROUND CONFIG BEGIN **/
-  externalsType: 'node-commonjs',
   externals: [
-    "express",
-    "ioredis",
-    "mysql",
-    "aws-sdk",
-    "elasticsearch",
-    "sequelize",
-    "mongodb"
-  ]
-  /** WORKAROUND CONFIG END **/
+    nodeExternals({
+      allowlist: [
+        function(module) {
+          const externalModules = [
+            "express",
+            "ioredis",
+            "mysql",
+            "aws-sdk",
+            "elasticsearch",
+            "sequelize",
+            "mongodb"
+            // Add any other necessary packages
+          ];
+
+          return !externalModules.includes(module);
+        }
+      ]
+    })
+  ],
+  /** WORKAROUND CONFIG BEGIN **/
 };
