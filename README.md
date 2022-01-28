@@ -10,19 +10,42 @@ To get tracing working via OpenTelemetry, we need to retain the `require` calls.
 
 The downside is that the dependencies listed in externals now need to be available in node_modules, else `require` can't find them.
 
-Say we are using `express` and want to instrument it via `@opentelemetry/instrumentation-express`, then the following needs to be added to `webpack.config.js`:
-```js
-  externalsType: "node-commonjs",
-  externals: [
-    "express"
-  ]
+Say we are using `express` and want to instrument it via `@opentelemetry/instrumentation-express`, then the following needs to be added to `package.json` and `webpack.config.js`:
+
+`package.json`
+```json
+  "devDependencies": {
+    "webpack-node-externals": "3.0.0"
+  }
 ```
+
+`webpack.config.js`
+```js
+  const nodeExternals = require('webpack-node-externals');
+
+  module.exports = {
+    externals: [
+      nodeExternals({
+        allowlist: [
+          function(module) {
+            const externalModules = [
+              "express",
+              // Add any other necessary packages
+            ];
+
+            return !externalModules.includes(module);
+          }
+        ]
+      })
+    ],
+  };
+```
+
+Note: using Webpack 5 would allow to get rid of `webpack-node-externals` by using `externalsType: "node-commonjs"`.
 
 Webpack will now load `express` via the usual `require` method.
 
-
 See [`webpack.config.js`](./webpack.config.js) for a complete list.
-
 
 P.S. When using instrumentations targetting Node.js internal libraries, such as `@opentelemetry/instrumentation-http`, `@opentelemetry/instrumentation-net`, `@opentelemetry/instrumentation-dns`, nothing needs to be added to `externals` as these libraries are required in the usual fashion.
 
