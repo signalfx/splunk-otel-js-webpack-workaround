@@ -1,18 +1,15 @@
 # Instrumentation workaround for Webpack 5 based projects
 
-Webpack 4 workaround is located [here](https://github.com/signalfx/splunk-otel-js-webpack-workaround/tree/webpack4).
+Webpack bundles all the source code, including dependencies, into a single JS file. Node.js usually loads modules through CommonJS, which means that dependencies are loaded using `require` functions (for example, `require("express")`). OpenTelemetry only supports CommonJS, as it injects itself into the `require` calls and intercepts loaded modules. With Webpack, `require` calls are compiled out, as all of the source code lives in a single bundle file and Webpack's internal module loading is used after copying the code. Thus OpenTelemetry, nor any other instrumentation SDKs, cannot instrument Webpack's internal modules.
 
-## Background
-
-Webpack bundles all the source code (including dependencies) into a single JS file. In Node.js module loading is usually done via CommonJS, meaning dependencies are loaded with `require` function (`require("express")`). OpenTelemetry currently only supports CommonJS as it injects itself into the `require` calls and modifies, intercepts loaded modules. With Webpack however these `require` calls are compiled out as all of the source code lives in a single bundle file and Webpack's internal module loading is used after copying the code. Thus OpenTelemetry (nor any other instrumentation SDKs) cannot instrument Webpack's internal modules.
+> The workaround for Webpack 4 is located [here](https://github.com/signalfx/splunk-otel-js-webpack-workaround/tree/webpack4).
 
 ## Workaround
 
-To get tracing working via OpenTelemetry, we need to retain the `require` calls. This can be achieved via Webpack [externals](https://webpack.js.org/configuration/externals/) configuration option. When modules are loaded and it encounters a module in the `externals` listing, it won't copy paste its source code to the final bundle.
+To get tracing to work using OpenTelemetry, you need to retain the `require` calls. You can do this using Webpack's [externals](https://webpack.js.org/configuration/externals/) configuration option. When modules are loaded and Webpack encounters a module in the `externals` list, it won't copies and pastes the source code to the final bundle file. Dependencies listed in externals need to be available in `node_modules` for `require` to find them.
 
-The downside is that the dependencies listed in externals now need to be available in node_modules, else `require` can't find them.
+Consider we are using `express` and want to instrument it using `@opentelemetry/instrumentation-express`. You'd need to add the following to `webpack.config.js`:
 
-Say we are using `express` and want to instrument it via `@opentelemetry/instrumentation-express`, then the following needs to be added to `webpack.config.js`:
 ```js
   externalsType: "node-commonjs",
   externals: [
@@ -20,13 +17,11 @@ Say we are using `express` and want to instrument it via `@opentelemetry/instrum
   ]
 ```
 
-Webpack will now load `express` via the usual `require` method.
-
+Webpack will now load `express` using the `require` method.
 
 See [`webpack.config.js`](./webpack.config.js) for a complete list.
 
-
-P.S. When using instrumentations targetting Node.js internal libraries, such as `@opentelemetry/instrumentation-http`, `@opentelemetry/instrumentation-net`, `@opentelemetry/instrumentation-dns`, nothing needs to be added to `externals` as these libraries are required in the usual fashion.
+> **Note**: When using instrumentations targeting Node.js code modules, such as `http`, `net`, and `dns`, you don't need to add them to `externals`.
 
 ## Running the example
 
@@ -38,4 +33,4 @@ npm run start
 curl localhost:7000/foo
 ```
 
-If you have collector running, you should now see spans from `http`, `dns`, `express` and `ioredis` instrumentations.
+If you have the Splunk OpenTelemetry Collector running, you should now see spans from `http`, `dns`, `express`, and `ioredis` instrumentations.
