@@ -19,7 +19,7 @@
     "express": "^4.17.0",
     "ioredis": "4.28.3",
     "mysql": "2.18.1",
-    "sequelize": "5.22.5",
+    "sequelize": "6.29.0",
     "mongodb": "3.5.6",
     "got": "12.0.1"
   },
